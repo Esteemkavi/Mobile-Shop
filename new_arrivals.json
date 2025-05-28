@@ -1,0 +1,33 @@
+{
+    "new_arrivals": [
+        { "image": "assets/new-arrivals/image1.jpg" },
+        { "image": "assets/new-arrivals/image2.jpg" },
+        { "image": "assets/new-arrivals/image3.jpg" },
+        { "image": "assets/new-arrivals/image4.jpg" },
+        { "image": "assets/new-arrivals/image5.jpg" },
+        { "image": "assets/new-arrivals/image6.jpg" },
+        { "image": "assets/new-arrivals/image7.jpg" },
+        { "image": "assets/new-arrivals/image8.jpg" },
+        { "image": "assets/new-arrivals/image9.jpg" },
+        { "image": "assets/new-arrivals/image10.jpg" },
+        { "image": "assets/new-arrivals/image11.jpg" },
+        { "image": "assets/new-arrivals/image12.jpg" },
+        { "image": "assets/new-arrivals/image13.jpg" },
+        { "image": "assets/new-arrivals/image14.jpg" },
+        { "image": "assets/new-arrivals/image15.jpg" },
+        { "image": "assets/new-arrivals/image16.jpg" },
+        { "image": "assets/new-arrivals/image17.jpg" },
+        { "image": "assets/new-arrivals/image18.jpg" },
+        { "image": "assets/new-arrivals/image19.jpg" },
+        { "image": "assets/new-arrivals/image20.jpg" },
+        { "image": "assets/new-arrivals/image21.jpg" },
+        { "image": "assets/new-arrivals/image22.jpg" },
+        { "image": "assets/new-arrivals/image23.jpg" },
+        { "image": "assets/new-arrivals/image24.jpg" },
+        { "image": "assets/new-arrivals/image25.jpg" },
+        { "image": "assets/new-arrivals/image26.jpg" },
+        { "image": "assets/new-arrivals/image27.jpg" },
+        { "image": "assets/new-arrivals/image28.jpg" }
+
+    ]
+}

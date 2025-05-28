@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasi Skin Store</title>
+    <meta name="description" content="Shop premium mobile skins at Sasi Skin Store. New arrivals, Marvel collections, and more!">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <h1 id="shop-name">Sasi Skin Store</h1>
+        </div>
+        <div class="header-right">
+            <input type="text" id="search-box" placeholder="Search skins...">
+        </div>
+    </header>
+
+    <main>
+        <div class="folder-container">
+            <div class="folder" onclick="loadSkins('iphone')">
+                <img src="assets/folder-icon.png" alt="Soft Materials">
+                <p>Soft Materials</p>
+            </div>
+            <div class="folder" onclick="loadSkins('samsung')">
+                <img src="assets/folder-icon.png" alt="Textures Materials">
+                <p>Textures Materials</p>
+            </div>
+            <div class="folder" onclick="loadSkins('oneplus')"> 
+                <img src="assets/folder-icon.png" alt="Marvel Collections"> 
+                <p>Marvel Collections</p>
+            </div>
+        </div>
+
+        <div id="gallery-section">
+            <div id="gallery" class="gallery-container"></div>
+            <div id="pagination"></div>
+        </div>
+    </main>
+    
+    <section id="new-arrivals">
+        <h2>🔥 New Arrivals 🔥</h2>
+        <div class="new-arrivals-wrapper"></div>
+        <div class="new-arrivals-container">
+        </div> <!-- Close the div -->
+    </section>
+    
+    <footer>
+        <p>📍 Location: Pollachi, Tamil Nadu</p>
+        <p>📞 Contact: <a href="tel:+919876543210">+91 98765 43210</a></p>
+        <div class="social-icons">
+            <a href="https://www.instagram.com/yourprofile" target="_blank">
+                <img src="assets/instagram.png" alt="Instagram">
+            </a>
+            <a href="https://www.facebook.com/yourprofile" target="_blank">
+                <img src="assets/facebook.png" alt="Facebook">
+            </a>
+            <a href="https://wa.me/919876543210" target="_blank">
+                <img src="assets/whatsapp.png" alt="WhatsApp">
+            </a>
+            <a href="https://www.youtube.com/yourchannel" target="_blank">
+                <img src="assets/youtube.png" alt="YouTube">
+            </a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

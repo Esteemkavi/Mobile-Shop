@@ -1,0 +1,33 @@
+{
+    "iphone": [
+        { "id": 1, "name": "iPhone Black Skin", "image": "assets/skins_products/image1.jpg" },
+        { "id": 2, "name": "iPhone White Skin", "image": "assets/skins_products/image2.jpg" },
+        { "id": 3, "name": "iPhone Red Skin", "image": "assets/skins_products/image3.jpg" },
+        { "id": 4, "name": "iPhone Green Skin", "image": "assets/skins_products/image4.jpg" },
+        { "id": 5, "name": "iPhone Gray Skin", "image": "assets/skins_products/image5.jpg" },
+        { "id": 6, "name": "iPhone Blue Skin", "image": "assets/skins_products/image6.jpg" },
+        { "id": 7, "name": "iPhone Purple Skin", "image": "assets/skins_products/image7.jpg" },
+        { "id": 8, "name": "iPhone Yellow Skin", "image": "assets/skins_products/image8.jpg" },
+        { "id": 9, "name": "iPhone Orange Skin", "image": "assets/skins_products/image9.jpg" },
+        { "id": 10, "name": "iPhone Pink Skin", "image": "assets/skins_products/image10.jpg" }
+    ],
+    "samsung": [
+        { "id": 11, "name": "iPhone Pink Skin", "image": "assets/skins_products/image11.jpg" },
+        { "id": 12, "name": "iPhone Pink Skin", "image": "assets/skins_products/image12.jpg" },
+        { "id": 13, "name": "iPhone Pink Skin", "image": "assets/skins_products/image13.jpg" },
+        { "id": 14, "name": "iPhone Pink Skin", "image": "assets/skins_products/image14.jpg" },
+        { "id": 15, "name": "iPhone Pink Skin", "image": "assets/skins_products/image15.jpg" },
+        { "id": 16, "name": "iPhone Pink Skin", "image": "assets/skins_products/image16.jpg" },
+        { "id": 17, "name": "iPhone Pink Skin", "image": "assets/skins_products/image17.jpg" },
+        { "id": 18, "name": "iPhone Pink Skin", "image": "assets/skins_products/image18.jpg" },
+        { "id": 19, "name": "iPhone Pink Skin", "image": "assets/skins_products/image19.jpg" }
+       
+    ],
+    "oneplus": [
+        { "id": 20, "name": "iPhone Pink Skin", "image": "assets/skins_products/image10.jpg" },
+        { "id": 21, "name": "OnePlus Green Camo", "image": "https://i.imgur.com/oneplus1.jpg" },
+        { "id": 22, "name": "OnePlus Wood Finish", "image": "https://i.imgur.com/oneplus2.jpg" },
+        { "id": 23, "name": "OnePlus Metal", "image": "https://i.imgur.com/oneplus3.jpg" }
+    ]
+}
+
