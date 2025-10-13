@@ -1,7 +1,7 @@
 {
     "iphone": [
-        { "id": 1, "name": "iPhone Black Skin", "image": "assets/skins_products/image1.jpg" },
-        { "id": 2, "name": "iPhone White Skin", "image": "assets/skins_products/image2.jpg" },
+    { "id": 1, "name": "iPhone Black Skin", "image": "assets/skins_products/image1.jpg", "price": 299 },
+    { "id": 2, "name": "iPhone White Skin", "image": "assets/skins_products/image2.jpg", "price": 249 },
         { "id": 3, "name": "iPhone Red Skin", "image": "assets/skins_products/image3.jpg" },
         { "id": 4, "name": "iPhone Green Skin", "image": "assets/skins_products/image4.jpg" },
         { "id": 5, "name": "iPhone Gray Skin", "image": "assets/skins_products/image5.jpg" },
@@ -25,7 +25,7 @@
     ],
     "oneplus": [
         { "id": 20, "name": "iPhone Pink Skin", "image": "assets/skins_products/image10.jpg" },
-        { "id": 21, "name": "OnePlus Green Camo", "image": "https://i.imgur.com/oneplus1.jpg" },
+    { "id": 21, "name": "OnePlus Green Camo", "image": "https://i.imgur.com/oneplus1.jpg", "price": 349 },
         { "id": 22, "name": "OnePlus Wood Finish", "image": "https://i.imgur.com/oneplus2.jpg" },
         { "id": 23, "name": "OnePlus Metal", "image": "https://i.imgur.com/oneplus3.jpg" }
     ]
