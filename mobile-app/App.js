@@ -2,144 +2,51 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Image, Linking, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 const RAW = "https://raw.githubusercontent.com/Esteemkavi/Mobile-Shop/main/";
+const PHONE = "8807382243";
+const DISPLAY_PHONE = "88073 82243";
+const WHATSAPP = `https://wa.me/91${PHONE}`;
+const C = { ink:"#080808", gold:"#F5B82E", orange:"#E66A22", cream:"#FFF7E8", paper:"#F5F2EC", muted:"#77736C", line:"#E4DED4", green:"#19A463", white:"#FFFFFF" };
+
 const categories = [
-  { key: "iphone", title: "Soft Materials", subtitle: "iPhone" },
-  { key: "samsung", title: "Textures Materials", subtitle: "Samsung" },
-  { key: "oneplus", title: "Marvel Collections", subtitle: "OnePlus" }
+  { key:"iphone", title:"iPhone", subtitle:"Soft Materials", icon:"◆" },
+  { key:"samsung", title:"Samsung", subtitle:"Texture Materials", icon:"▦" },
+  { key:"oneplus", title:"OnePlus", subtitle:"Marvel Collections", icon:"✦" }
 ];
-const links = {
-  phone: "tel:+919876543210",
-  whatsapp: "https://wa.me/919876543210?text=Hi%20NextGen%20Mobiles",
-  instagram: "https://instagram.com/",
-  facebook: "https://facebook.com/",
-  youtube: "https://youtube.com/"
-};
 
-const imageUrl = (p) => (!p ? null : /^https?:\/\//i.test(p) ? p : RAW + p.replace(/^\//, ""));
-const price = (p) => (p ? "₹" + p : "Price on enquiry");
+const imageUrl = p => !p ? null : /^https?:\/\//i.test(p) ? p : RAW + p.replace(/^\//,"");
+const price = p => p ? "₹"+p : "Price on enquiry";
 
-function ProductCard({ item, onPress }) {
-  return (
-    <Pressable onPress={() => onPress(item)} style={styles.card}>
-      <Image source={{ uri: imageUrl(item.image) }} style={styles.image} />
-      <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
-      <Text style={styles.price}>{price(item.price)}</Text>
-    </Pressable>
-  );
+function Logo(){return <View style={S.logoWrap}><View style={S.logoMark}><Text style={S.logoMarkText}>N</Text></View><View><Text style={S.logoText}>NEXTGEN MOBILES</Text><Text style={S.logoSub}>MOBILE SKINS • SALES • SERVICE</Text></View></View>;}
+function ProductCard({item,onPress}){return <Pressable onPress={()=>onPress(item)} style={({pressed})=>[S.card,pressed&&S.pressed]}><View style={S.cardImageWrap}><Image source={{uri:imageUrl(item.image)}} style={S.image}/><View style={S.badge}><Text style={S.badgeText}>SKIN</Text></View></View><Text numberOfLines={2} style={S.name}>{item.name}</Text><View style={S.cardBottom}><Text style={S.price}>{price(item.price)}</Text><Text style={S.arrow}>›</Text></View></Pressable>;}
+function NavItem({icon,label,active,onPress}){return <Pressable onPress={onPress} style={S.navItem}><Text style={[S.navIcon,active&&S.active]}>{icon}</Text><Text style={[S.navLabel,active&&S.active]}>{label}</Text></Pressable>;}
+function ContactBlock(){return <View style={S.footer}><Text style={S.footerEyebrow}>NEXTGEN MOBILES</Text><Text style={S.footerTitle}>Need help choosing a skin?</Text><Text style={S.footerText}>Call or WhatsApp us for availability, pricing and installation.</Text><Pressable style={S.footerButton} onPress={()=>Linking.openURL(`${WHATSAPP}?text=${encodeURIComponent("Hi NextGen Mobiles, I need help choosing a mobile skin.")}`)}><Text style={S.footerButtonText}>Chat on WhatsApp  ›</Text></Pressable></View>;}
+
+export default function App(){
+ const [catalog,setCatalog]=useState(null),[arrivals,setArrivals]=useState([]),[category,setCategory]=useState("iphone"),[search,setSearch]=useState(""),[selected,setSelected]=useState(null),[page,setPage]=useState(1),[tab,setTab]=useState("home"),[error,setError]=useState("");
+ useEffect(()=>{Promise.all([fetch(RAW+"skins.json").then(r=>r.json()),fetch(RAW+"new_arrivals.json").then(r=>r.json())]).then(([c,a])=>{setCatalog(c);setArrivals(a.new_arrivals||[]);}).catch(()=>setError("Could not load the catalog. Check your internet connection."));},[]);
+ const products=useMemo(()=>{const all=Object.entries(catalog||{}).flatMap(([cat,items])=>(items||[]).map(x=>({...x,category:cat})));if(search.trim()){const q=search.toLowerCase();return all.filter(x=>String(x.name||"").toLowerCase().includes(q));}return (catalog?.[category]||[]).map(x=>({...x,category}));},[catalog,category,search]);
+ if(selected)return <View style={S.safe}><ScrollView contentContainerStyle={S.detail}><Pressable onPress={()=>setSelected(null)}><Text style={S.back}>‹  Back</Text></Pressable><View style={S.detailImageWrap}><Image source={{uri:imageUrl(selected.image)}} style={S.detailImage} resizeMode="contain"/></View><Text style={S.category}>{String(selected.category).toUpperCase()}</Text><Text style={S.detailName}>{selected.name}</Text><Text style={S.detailPrice}>{price(selected.price)}</Text><View style={S.infoBox}><Text style={S.infoTitle}>Premium Mobile Skin</Text><Text style={S.desc}>Ask us about availability, installation, customization and the latest price.</Text></View><Pressable style={S.whatsapp} onPress={()=>Linking.openURL(`${WHATSAPP}?text=${encodeURIComponent("Hi NextGen Mobiles, I am interested in: "+selected.name)}`)}><Text style={S.whatsappText}>◉  Enquire on WhatsApp</Text></Pressable><Pressable style={S.callButton} onPress={()=>Linking.openURL(`tel:+91${PHONE}`)}><Text style={S.callText}>☎  Call {DISPLAY_PHONE}</Text></Pressable></ScrollView></View>;
+ if(error)return <View style={S.center}><Text style={S.error}>{error}</Text></View>;
+ if(!catalog)return <View style={S.center}><ActivityIndicator size="large"/><Text style={S.loading}>Loading NextGen Mobiles...</Text></View>;
+ const visible=products.slice(0,page*8);
+ const grid=<>{visible.length===0?<Text style={S.empty}>No skins found.</Text>:<View style={S.grid}>{visible.map(item=><ProductCard key={String(item.id)+"-"+item.category} item={item} onPress={setSelected}/>)}</View>}{visible.length<products.length&&<Pressable style={S.more} onPress={()=>setPage(p=>p+1)}><Text style={S.moreText}>Load More Products</Text></Pressable>}</>;
+ const home=<ScrollView contentContainerStyle={S.content} showsVerticalScrollIndicator={false}><View style={S.hero}><Text style={S.heroEyebrow}>PREMIUM MOBILE SKINS</Text><Text style={S.heroTitle}>Make your phone{"\n"}look <Text style={S.heroAccent}>NextGen.</Text></Text><Text style={S.heroText}>Premium skins, mobile accessories, recharge and service — all under one roof.</Text><Pressable style={S.heroButton} onPress={()=>setTab("categories")}><Text style={S.heroButtonText}>Explore Collection  ›</Text></Pressable></View><Text style={S.section}>Shop by Category</Text><Text style={S.hint}>Choose your device</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={S.catRow}>{categories.map(c=><Pressable key={c.key} onPress={()=>{setCategory(c.key);setSearch("");setPage(1);setTab("categories");}} style={S.cat}><View style={S.catIcon}><Text style={S.catIconText}>{c.icon}</Text></View><Text style={S.catTitle}>{c.title}</Text><Text style={S.catSub}>{c.subtitle}</Text></Pressable>)}</ScrollView><View style={S.sectionRow}><View><Text style={S.section}>{search?"Search Results":"Featured Skins"}</Text><Text style={S.hint}>{search?products.length+" matches":"Fresh styles for your phone"}</Text></View><Pressable onPress={()=>setTab("categories")}><Text style={S.viewAll}>View all</Text></Pressable></View><TextInput value={search} onChangeText={v=>{setSearch(v);setPage(1)}} placeholder="Search skins..." placeholderTextColor="#8C877F" style={S.search}/>{grid}<Text style={S.section}>New Arrivals</Text><Text style={S.hint}>Latest designs</Text><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={S.arrivals}>{arrivals.map((item,i)=><Pressable key={String(i)} onPress={()=>setSelected({...item,category:"new arrivals"})}><Image source={{uri:imageUrl(item.image)}} style={S.arrival}/></Pressable>)}</ScrollView><ContactBlock/></ScrollView>;
+ const categoriesScreen=<ScrollView contentContainerStyle={S.content} showsVerticalScrollIndicator={false}><Text style={S.pageTitle}>Collections</Text><Text style={S.pageSub}>Browse skins by mobile brand</Text><View style={S.categoryList}>{categories.map(c=><Pressable key={c.key} onPress={()=>{setCategory(c.key);setSearch("");setPage(1)}} style={[S.categoryLarge,category===c.key&&S.categoryLargeActive]}><View style={S.categoryLargeIcon}><Text style={S.catIconText}>{c.icon}</Text></View><View style={S.categoryCopy}><Text style={S.categoryTitle}>{c.title}</Text><Text style={S.categorySub}>{c.subtitle}</Text></View><Text style={S.categoryArrow}>›</Text></Pressable>)}</View><View style={S.sectionRow}><View><Text style={S.section}>{category[0].toUpperCase()+category.slice(1)} Skins</Text><Text style={S.hint}>{products.length} products</Text></View></View><TextInput value={search} onChangeText={v=>{setSearch(v);setPage(1)}} placeholder="Search this collection..." placeholderTextColor="#8C877F" style={S.search}/>{grid}</ScrollView>;
+ const arrivalsScreen=<ScrollView contentContainerStyle={S.content}><Text style={S.pageTitle}>New Arrivals</Text><Text style={S.pageSub}>Our latest skin designs and collections</Text><View style={S.arrivalGrid}>{arrivals.map((item,i)=><Pressable key={String(i)} onPress={()=>setSelected({...item,category:"new arrivals"})} style={S.arrivalCard}><Image source={{uri:imageUrl(item.image)}} style={S.arrivalLarge}/></Pressable>)}</View><ContactBlock/></ScrollView>;
+ const contactScreen=<ScrollView contentContainerStyle={S.content}><Text style={S.pageTitle}>Contact Us</Text><Text style={S.pageSub}>Visit our shop or message us directly</Text><View style={S.contactCard}><Logo/><View style={S.contactLine}><Text style={S.contactIcon}>⌖</Text><View style={S.contactCopy}><Text style={S.contactLabel}>ADDRESS</Text><Text style={S.contactValue}>301/4, Arogiyanathar Street, Rajamill Road, Pollachi - 642001</Text></View></View><View style={S.contactLine}><Text style={S.contactIcon}>☎</Text><View style={S.contactCopy}><Text style={S.contactLabel}>PHONE / WHATSAPP</Text><Text style={S.contactValue}>+91 {DISPLAY_PHONE}</Text></View></View></View><Pressable style={S.whatsapp} onPress={()=>Linking.openURL(`${WHATSAPP}?text=Hi%20NextGen%20Mobiles`)}><Text style={S.whatsappText}>◉  Chat on WhatsApp</Text></Pressable><Pressable style={S.callButton} onPress={()=>Linking.openURL(`tel:+91${PHONE}`)}><Text style={S.callText}>☎  Call Now</Text></Pressable><Text style={S.socialTitle}>Follow NextGen Mobiles</Text><View style={S.socialRow}>{[["Instagram","https://instagram.com/"],["Facebook","https://facebook.com/"],["YouTube","https://youtube.com/"]].map(([label,url])=><Pressable key={label} style={S.socialButton} onPress={()=>Linking.openURL(url)}><Text style={S.socialText}>{label}</Text></Pressable>)}</View></ScrollView>;
+ return <View style={S.safe}><View style={S.topBar}><Logo/><Pressable style={S.topCall} onPress={()=>Linking.openURL(`tel:+91${PHONE}`)}><Text style={S.topCallIcon}>☎</Text></Pressable></View>{tab==="home"&&home}{tab==="categories"&&categoriesScreen}{tab==="arrivals"&&arrivalsScreen}{tab==="contact"&&contactScreen}<View style={S.nav}><NavItem icon="⌂" label="Home" active={tab==="home"} onPress={()=>setTab("home")}/><NavItem icon="▦" label="Categories" active={tab==="categories"} onPress={()=>setTab("categories")}/><NavItem icon="✦" label="Arrivals" active={tab==="arrivals"} onPress={()=>setTab("arrivals")}/><NavItem icon="☎" label="Contact" active={tab==="contact"} onPress={()=>setTab("contact")}/></View></View>;
 }
 
-export default function App() {
-  const [catalog, setCatalog] = useState(null);
-  const [arrivals, setArrivals] = useState([]);
-  const [category, setCategory] = useState("iphone");
-  const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState(null);
-  const [page, setPage] = useState(1);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    Promise.all([
-      fetch(RAW + "skins.json").then((r) => r.json()),
-      fetch(RAW + "new_arrivals.json").then((r) => r.json())
-    ])
-      .then(([c, a]) => {
-        setCatalog(c);
-        setArrivals(a.new_arrivals || []);
-      })
-      .catch(() => setError("Could not load the catalog. Check your internet connection."));
-  }, []);
-
-  const products = useMemo(() => {
-    const all = Object.entries(catalog || {}).flatMap(([cat, items]) =>
-      (items || []).map((x) => ({ ...x, category: cat }))
-    );
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      return all.filter((x) => String(x.name || "").toLowerCase().includes(q));
-    }
-    return (catalog?.[category] || []).map((x) => ({ ...x, category }));
-  }, [catalog, category, search]);
-
-  if (selected) {
-    return (
-      <View style={styles.safe}>
-        <ScrollView contentContainerStyle={styles.detail}>
-          <Pressable onPress={() => setSelected(null)}>
-            <Text style={styles.back}>‹ Back</Text>
-          </Pressable>
-          <Image source={{ uri: imageUrl(selected.image) }} style={styles.detailImage} resizeMode="contain" />
-          <Text style={styles.category}>{String(selected.category).toUpperCase()}</Text>
-          <Text style={styles.detailName}>{selected.name}</Text>
-          <Text style={styles.detailPrice}>{price(selected.price)}</Text>
-          <Text style={styles.desc}>Premium mobile skin from NextGen Mobiles. Contact us for availability, installation and current pricing.</Text>
-          <Pressable style={styles.whatsapp} onPress={() => Linking.openURL("https://wa.me/919876543210?text=" + encodeURIComponent("Hi NextGen Mobiles, I am interested in: " + selected.name))}>
-            <Text style={styles.whatsappText}>Enquire on WhatsApp</Text>
-          </Pressable>
-        </ScrollView>
-      </View>
-    );
-  }
-
-  if (error) return <View style={styles.center}><Text style={styles.error}>{error}</Text></View>;
-  if (!catalog) return <View style={styles.center}><ActivityIndicator size="large" /><Text>Loading NextGen Mobiles...</Text></View>;
-
-  const visible = products.slice(0, page * 10);
-
-  return (
-    <View style={styles.safe}>
-      <View style={styles.header}>
-        <Text style={styles.brand}>NextGen Mobiles</Text>
-        <Text style={styles.tagline}>Premium mobile skins</Text>
-        <TextInput value={search} onChangeText={(v) => { setSearch(v); setPage(1); }} placeholder="Search skins..." placeholderTextColor="#888" style={styles.search} />
-      </View>
-
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.section}>Categories</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.catRow}>
-          {categories.map((c) => (
-            <Pressable key={c.key} onPress={() => { setCategory(c.key); setSearch(""); setPage(1); }} style={[styles.cat, category === c.key && styles.catActive]}>
-              <Text style={styles.catIcon}>▣</Text>
-              <Text style={styles.catTitle}>{c.title}</Text>
-              <Text style={styles.catSub}>{c.subtitle}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-
-        <Text style={styles.section}>{search ? "Search Results" : "Products"}</Text>
-        {visible.length === 0 ? <Text style={styles.empty}>No skins found.</Text> : (
-          <View style={styles.grid}>
-            {visible.map((item) => <ProductCard key={String(item.id) + "-" + item.category} item={item} onPress={setSelected} />)}
-          </View>
-        )}
-
-        {visible.length < products.length && <Pressable style={styles.more} onPress={() => setPage((p) => p + 1)}><Text style={styles.moreText}>Load More</Text></Pressable>}
-
-        <Text style={styles.arrivalTitle}>New Arrivals</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.arrivals}>
-          {arrivals.map((item, index) => <Image key={String(index)} source={{ uri: imageUrl(item.image) }} style={styles.arrival} />)}
-        </ScrollView>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerTitle}>NextGen Mobiles</Text>
-          <Text style={styles.footerText}>Pollachi, Tamil Nadu</Text>
-          <Text style={styles.footerText}>+91 98765 43210</Text>
-          <View style={styles.actions}>
-            {[["Call", links.phone], ["WhatsApp", links.whatsapp], ["Instagram", links.instagram], ["Facebook", links.facebook], ["YouTube", links.youtube]].map(([t, u]) => (
-              <Pressable key={t} style={styles.action} onPress={() => Linking.openURL(u)}><Text style={styles.actionText}>{t}</Text></Pressable>
-            ))}
-          </View>
-        </View>
-      </ScrollView>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  safe:{flex:1,backgroundColor:"#f0f0f0"}, center:{flex:1,alignItems:"center",justifyContent:"center",padding:24,backgroundColor:"#f0f0f0"}, error:{fontSize:17,textAlign:"center"},
-  header:{backgroundColor:"#222",padding:16}, brand:{color:"#fff",fontSize:27,fontWeight:"800"}, tagline:{color:"#aaa",marginTop:2,marginBottom:12}, search:{height:44,backgroundColor:"#fff",borderRadius:10,paddingHorizontal:14},
-  content:{padding:14,paddingBottom:30}, section:{fontSize:22,fontWeight:"800",marginBottom:10,color:"#222"}, catRow:{gap:10,paddingBottom:18}, cat:{width:150,minHeight:110,backgroundColor:"#fff",borderRadius:14,padding:14,borderWidth:1,borderColor:"#e0e0e0"}, catActive:{borderColor:"#ff5733",borderWidth:2}, catIcon:{fontSize:26,color:"#ff5733"}, catTitle:{fontWeight:"800",marginTop:6}, catSub:{color:"#777",marginTop:4},
-  grid:{flexDirection:"row",flexWrap:"wrap",justifyContent:"space-between"}, card:{width:"48%",backgroundColor:"#fff",borderRadius:12,padding:8,marginBottom:12,borderWidth:1,borderColor:"#e5e5e5"}, image:{width:"100%",aspectRatio:3/4,borderRadius:9,backgroundColor:"#eee"}, name:{fontSize:14,fontWeight:"700",marginTop:9,minHeight:36}, price:{color:"#ff5733",fontSize:16,fontWeight:"800",marginTop:4}, empty:{textAlign:"center",padding:30,color:"#666"},
-  more:{alignSelf:"center",backgroundColor:"#0078d7",paddingHorizontal:22,paddingVertical:11,borderRadius:9,marginVertical:8}, moreText:{color:"#fff",fontWeight:"800"}, arrivalTitle:{fontSize:24,fontWeight:"900",color:"#ff5733",marginTop:26,marginBottom:10}, arrivals:{gap:10,paddingBottom:18}, arrival:{width:150,height:200,borderRadius:10,backgroundColor:"#eee"},
-  footer:{backgroundColor:"#222",borderRadius:14,padding:18,marginTop:12}, footerTitle:{color:"#fff",fontSize:20,fontWeight:"900"}, footerText:{color:"#bbb",marginTop:5}, actions:{flexDirection:"row",flexWrap:"wrap",gap:8,marginTop:14}, action:{backgroundColor:"#fff",paddingHorizontal:12,paddingVertical:9,borderRadius:8}, actionText:{fontWeight:"800"},
-  detail:{padding:16,paddingBottom:40}, back:{fontSize:18,fontWeight:"800",marginBottom:8}, detailImage:{width:"100%",height:430,backgroundColor:"#fff",borderRadius:14}, category:{color:"#777",fontSize:12,fontWeight:"800",marginTop:18,letterSpacing:1}, detailName:{fontSize:28,fontWeight:"900",marginTop:6}, detailPrice:{color:"#ff5733",fontSize:24,fontWeight:"900",marginTop:10}, desc:{color:"#555",fontSize:16,lineHeight:24,marginTop:18}, whatsapp:{backgroundColor:"#128c7e",borderRadius:12,padding:15,alignItems:"center",marginTop:24}, whatsappText:{color:"#fff",fontWeight:"900",fontSize:16}
+const S=StyleSheet.create({
+ safe:{flex:1,backgroundColor:C.paper},center:{flex:1,alignItems:"center",justifyContent:"center",padding:24,backgroundColor:C.paper},error:{fontSize:16,textAlign:"center",color:C.ink},loading:{marginTop:10,color:C.muted},
+ topBar:{backgroundColor:C.ink,paddingHorizontal:18,paddingTop:15,paddingBottom:13,flexDirection:"row",alignItems:"center",justifyContent:"space-between"},logoWrap:{flexDirection:"row",alignItems:"center"},logoMark:{width:38,height:38,borderRadius:19,borderWidth:2,borderColor:C.gold,alignItems:"center",justifyContent:"center",marginRight:10},logoMarkText:{color:C.gold,fontSize:20,fontWeight:"900",fontStyle:"italic"},logoText:{color:C.white,fontSize:17,fontWeight:"900",letterSpacing:.5},logoSub:{color:"#A9A49B",fontSize:7,marginTop:2,letterSpacing:.9},topCall:{width:40,height:40,borderRadius:20,backgroundColor:C.gold,alignItems:"center",justifyContent:"center"},topCallIcon:{fontSize:19,color:C.ink,fontWeight:"900"},
+ content:{padding:16,paddingBottom:110},hero:{backgroundColor:C.ink,borderRadius:24,padding:24,marginBottom:25},heroEyebrow:{color:C.gold,fontSize:11,fontWeight:"900",letterSpacing:1.6},heroTitle:{color:C.white,fontSize:34,lineHeight:39,fontWeight:"900",marginTop:10},heroAccent:{color:C.gold},heroText:{color:"#C9C4BC",fontSize:14,lineHeight:21,marginTop:13},heroButton:{alignSelf:"flex-start",backgroundColor:C.gold,paddingHorizontal:17,paddingVertical:12,borderRadius:10,marginTop:19},heroButtonText:{color:C.ink,fontWeight:"900",fontSize:13},
+ sectionRow:{flexDirection:"row",alignItems:"flex-end",justifyContent:"space-between",marginTop:18,marginBottom:11},section:{fontSize:21,fontWeight:"900",color:C.ink,marginTop:12},hint:{fontSize:12,color:C.muted,marginTop:3},viewAll:{fontSize:13,fontWeight:"900",color:C.orange},search:{height:46,backgroundColor:C.white,borderRadius:12,paddingHorizontal:14,borderWidth:1,borderColor:C.line,marginTop:10,marginBottom:14,color:C.ink},
+ catRow:{gap:11,paddingBottom:15},cat:{width:148,height:125,backgroundColor:C.white,borderRadius:17,padding:14,borderWidth:1,borderColor:C.line},catIcon:{width:38,height:38,borderRadius:12,backgroundColor:C.cream,alignItems:"center",justifyContent:"center"},catIconText:{fontSize:18,color:C.orange,fontWeight:"900"},catTitle:{fontSize:17,fontWeight:"900",marginTop:12,color:C.ink},catSub:{fontSize:11,color:C.muted,marginTop:3},
+ grid:{flexDirection:"row",flexWrap:"wrap",justifyContent:"space-between"},card:{width:"48.2%",backgroundColor:C.white,borderRadius:17,padding:8,marginBottom:13,borderWidth:1,borderColor:C.line},pressed:{opacity:.82},cardImageWrap:{position:"relative"},image:{width:"100%",aspectRatio:.86,borderRadius:12,backgroundColor:"#ECE9E2"},badge:{position:"absolute",top:8,left:8,backgroundColor:C.ink,paddingHorizontal:7,paddingVertical:4,borderRadius:6},badgeText:{color:C.gold,fontSize:8,fontWeight:"900"},name:{fontSize:14,fontWeight:"800",marginTop:10,minHeight:36,color:C.ink,lineHeight:18},cardBottom:{flexDirection:"row",alignItems:"center",justifyContent:"space-between",marginTop:5},price:{color:C.orange,fontSize:15,fontWeight:"900"},arrow:{fontSize:24,color:C.orange,fontWeight:"900"},empty:{textAlign:"center",padding:30,color:C.muted},more:{alignSelf:"center",backgroundColor:C.ink,paddingHorizontal:20,paddingVertical:12,borderRadius:10,marginVertical:8},moreText:{color:C.gold,fontWeight:"900",fontSize:13},
+ arrivals:{gap:10,paddingBottom:21},arrival:{width:145,height:190,borderRadius:15,backgroundColor:"#EAE6DD"},footer:{backgroundColor:C.ink,borderRadius:20,padding:20,marginTop:10},footerEyebrow:{color:C.gold,fontSize:10,fontWeight:"900",letterSpacing:1.4},footerTitle:{color:C.white,fontSize:22,fontWeight:"900",marginTop:7},footerText:{color:"#BEB9B0",fontSize:13,lineHeight:19,marginTop:7},footerButton:{alignSelf:"flex-start",backgroundColor:C.gold,paddingHorizontal:15,paddingVertical:11,borderRadius:9,marginTop:15},footerButtonText:{color:C.ink,fontWeight:"900"},
+ pageTitle:{fontSize:30,fontWeight:"900",color:C.ink,marginTop:4},pageSub:{fontSize:13,color:C.muted,marginTop:4,marginBottom:18},categoryList:{gap:10,marginBottom:10},categoryLarge:{backgroundColor:C.white,borderWidth:1,borderColor:C.line,borderRadius:16,padding:14,flexDirection:"row",alignItems:"center"},categoryLargeActive:{borderColor:C.gold,borderWidth:2},categoryLargeIcon:{width:46,height:46,borderRadius:14,backgroundColor:C.cream,alignItems:"center",justifyContent:"center"},categoryCopy:{flex:1,marginLeft:13},categoryTitle:{fontSize:17,fontWeight:"900"},categorySub:{fontSize:12,color:C.muted,marginTop:2},categoryArrow:{fontSize:28,color:C.orange},arrivalGrid:{flexDirection:"row",flexWrap:"wrap",justifyContent:"space-between"},arrivalCard:{width:"48.5%",backgroundColor:C.white,borderRadius:15,padding:7,marginBottom:12,borderWidth:1,borderColor:C.line},arrivalLarge:{width:"100%",aspectRatio:.78,borderRadius:10,backgroundColor:"#EAE6DD"},
+ contactCard:{backgroundColor:C.white,borderRadius:20,padding:18,borderWidth:1,borderColor:C.line},contactLine:{flexDirection:"row",marginTop:24},contactIcon:{fontSize:23,color:C.orange,width:36},contactCopy:{flex:1},contactLabel:{fontSize:9,fontWeight:"900",letterSpacing:1,color:C.muted},contactValue:{fontSize:14,fontWeight:"700",color:C.ink,lineHeight:21,marginTop:3},whatsapp:{backgroundColor:C.green,borderRadius:12,padding:15,alignItems:"center",justifyContent:"center",marginTop:15},whatsappText:{color:C.white,fontWeight:"900",fontSize:15},callButton:{backgroundColor:C.ink,borderRadius:12,padding:15,alignItems:"center",marginTop:10},callText:{color:C.gold,fontWeight:"900",fontSize:15},socialTitle:{fontSize:18,fontWeight:"900",marginTop:27,marginBottom:11},socialRow:{flexDirection:"row",gap:8},socialButton:{backgroundColor:C.white,borderWidth:1,borderColor:C.line,paddingHorizontal:13,paddingVertical:10,borderRadius:10},socialText:{fontWeight:"800",fontSize:12},
+ nav:{position:"absolute",left:0,right:0,bottom:0,height:73,backgroundColor:C.white,borderTopWidth:1,borderTopColor:C.line,flexDirection:"row",justifyContent:"space-around",paddingTop:8,paddingBottom:8},navItem:{alignItems:"center",justifyContent:"center",flex:1},navIcon:{fontSize:20,color:"#9A958C"},navLabel:{fontSize:10,color:"#9A958C",fontWeight:"700",marginTop:3},active:{color:C.orange,fontWeight:"900"},
+ detail:{padding:16,paddingBottom:40},back:{fontSize:17,fontWeight:"900",color:C.ink,marginBottom:10},detailImageWrap:{backgroundColor:C.white,borderRadius:20,padding:10,borderWidth:1,borderColor:C.line},detailImage:{width:"100%",height:410},category:{color:C.orange,fontSize:11,fontWeight:"900",marginTop:18,letterSpacing:1.3},detailName:{fontSize:29,fontWeight:"900",marginTop:6,color:C.ink},detailPrice:{color:C.orange,fontSize:24,fontWeight:"900",marginTop:9},infoBox:{backgroundColor:C.cream,borderRadius:14,padding:15,marginTop:17},infoTitle:{fontSize:14,fontWeight:"900",color:C.ink},desc:{color:"#625E57",fontSize:14,lineHeight:21,marginTop:5}
 });
