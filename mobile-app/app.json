@@ -10,6 +10,19 @@
     },
     "ios": {
       "bundleIdentifier": "com.nextgenmobiles.shop"
+    },
+    "plugins": [
+      [
+        "expo-status-bar",
+        {
+          "hidden": false,
+          "style": "light"
+        }
+      ]
+    ],
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#080808"
     }
   }
 }
