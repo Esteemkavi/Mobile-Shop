@@ -5,8 +5,11 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "splash": { "backgroundColor": "#222222" },
-    "android": { "package": "com.nextgenmobiles.shop" },
-    "ios": { "bundleIdentifier": "com.nextgenmobiles.shop" }
+    "android": {
+      "package": "com.nextgenmobiles.shop"
+    },
+    "ios": {
+      "bundleIdentifier": "com.nextgenmobiles.shop"
+    }
   }
 }
