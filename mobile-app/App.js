@@ -16,8 +16,8 @@ const C = { ink:"#080808", gold:"#F5B82E", orange:"#E66A22", cream:"#FFF7E8", pa
 const categories = [
   { key:"mobile-skins", title:"Mobile Skins", subtitle:"Premium Skin Collections", icon:"◆", catalog:true },
   { key:"screen-guard", title:"Screen Guard", subtitle:"Premium Screen Protection", icon:"◇", catalog:false },
-  { key:"smartphones", title:"Smartphones", subtitle:"Sales & Latest Models", icon:"▣", catalog:false },
-  { key:"tempered-glass", title:"Unbreakable Tempered Glass", subtitle:"Premium Protection", icon:"◇", catalog:false }
+  { key:"tempered-glass", title:"Unbreakable Tempered Glass", subtitle:"Premium Protection", icon:"◇", catalog:false },
+  { key:"smartphones", title:"Smartphones", subtitle:"Sales & Latest Models", icon:"▣", catalog:false }
 ];
 
 const imageUrl = p => !p ? null : /^https?:\/\//i.test(p) ? p : RAW + p.replace(/^\//,"");
