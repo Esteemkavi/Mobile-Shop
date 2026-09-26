@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Image, Linking, Pressable, ScrollView, StyleSheet, Text, TextInput, View, StatusBar } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { supabase } from "./lib/supabase";
 
 const RAW = "https://raw.githubusercontent.com/Esteemkavi/Mobile-Shop/main/";
 const SOCIAL_ICONS = {
@@ -29,8 +30,101 @@ function NavItem({icon,label,active,onPress}){return <Pressable onPress={onPress
 function ContactBlock(){return <View style={S.footer}><Text style={S.footerEyebrow}>NEXTGEN MOBILES</Text><Text style={S.footerTitle}>Need help choosing a skin?</Text><Text style={S.footerText}>Call or WhatsApp us for availability, pricing and installation.</Text><Pressable style={S.footerButton} onPress={()=>Linking.openURL(`${WHATSAPP}?text=${encodeURIComponent("Hi NextGen Mobiles, I need help choosing a mobile skin.")}`)}><Text style={S.footerButtonText}>Chat on WhatsApp  ›</Text></Pressable></View>;}
 
 function AppContent(){
+useEffect(() => {
+  const loadSkinImages = async () => {
+    const { data, error } = await supabase.storage
+      .from("skins_products")
+      .list("", {
+        limit: 100,
+        sortBy: { column: "name", order: "asc" },
+      });
+
+    if (error) {
+      setError("Could not load skin images.");
+      return;
+    }
+
+    const skinProducts = (data || [])
+      .filter((file) => file.name && !file.name.startsWith("."))
+      .map((file, index) => ({
+        id: `skin-${index + 1}`,
+        name: `Mobile Skin ${index + 1}`,
+        image: supabase.storage
+          .from("skins_products")
+          .getPublicUrl(file.name).data.publicUrl,
+      }));
+
+    setCatalog({
+      "mobile-skins": skinProducts,
+    });
+  };
+
+  loadSkinImages();
+}, []);
  const [catalog,setCatalog]=useState(null),[arrivals,setArrivals]=useState([]),[category,setCategory]=useState("mobile-skins"),[search,setSearch]=useState(""),[selected,setSelected]=useState(null),[page,setPage]=useState(1),[tab,setTab]=useState("home"),[error,setError]=useState("");
- useEffect(()=>{Promise.all([fetch(RAW+"skins.json").then(r=>r.json()),fetch(RAW+"new_arrivals.json").then(r=>r.json())]).then(([c,a])=>{setCatalog(c);setArrivals(a.new_arrivals||[]);}).catch(()=>setError("Could not load the catalog. Check your internet connection."));},[]);
+useEffect(() => {
+  const loadProducts = async () => {
+    const { data, error } = await supabase
+      .from("products")
+      .select(`
+        id,
+        name,
+        image_url,
+        price,
+        description,
+        is_new_arrival,
+        categories (
+          slug,
+          name
+        )
+      `)
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      setError("Could not load the catalog. Check your internet connection.");
+      return;
+    }
+
+    const groupedCatalog = {};
+
+    (data || []).forEach((product) => {
+      const slug = product.categories?.slug;
+
+      if (!slug) return;
+
+      if (!groupedCatalog[slug]) {
+        groupedCatalog[slug] = [];
+      }
+
+      groupedCatalog[slug].push({
+        id: product.id,
+        name: product.name,
+        image: product.image_url,
+        price: product.price,
+        description: product.description,
+      });
+    });
+
+setCatalog((prev) => ({
+  ...groupedCatalog,
+  "mobile-skins":
+    prev?.["mobile-skins"] || groupedCatalog["mobile-skins"] || [],
+}));
+
+    setArrivals(
+      (data || [])
+        .filter((product) => product.is_new_arrival)
+        .map((product) => ({
+          id: product.id,
+          image: product.image_url,
+          name: product.name,
+        }))
+    );
+  };
+
+  loadProducts();
+}, []);
  const products=useMemo(()=>{const all=Object.entries(catalog||{}).flatMap(([cat,items])=>(items||[]).map(x=>({...x,category:cat})));if(search.trim()){const q=search.toLowerCase();return all.filter(x=>String(x.name||"").toLowerCase().includes(q));}return category==="mobile-skins" ? all : (catalog?.[category]||[]).map(x=>({...x,category}));},[catalog,category,search]);
  const activeCategory=categories.find(c=>c.key===category)||categories[0];
  if(selected)return <View style={S.root}><StatusBar barStyle="light-content" hidden={false} translucent={false} backgroundColor="#171717" /><SafeAreaView style={S.safe} edges={["top","bottom"]}><ScrollView contentContainerStyle={S.detail}><Pressable onPress={()=>setSelected(null)}><Text style={S.back}>‹  Back</Text></Pressable><View style={S.detailImageWrap}><Image source={{uri:imageUrl(selected.image)}} style={S.detailImage} resizeMode="contain"/></View><Text style={S.category}>{String(selected.category).toUpperCase()}</Text><Text style={S.detailName}>{selected.name}</Text><View style={S.infoBox}><Text style={S.infoTitle}>Premium Mobile Skin</Text><Text style={S.desc}>Ask us about availability, installation, customization and the latest price.</Text></View><Pressable style={S.whatsapp} onPress={()=>Linking.openURL(`${WHATSAPP}?text=${encodeURIComponent("Hi NextGen Mobiles, I am interested in: "+selected.name)}`)}><Text style={S.whatsappText}>◉  Enquire on WhatsApp</Text></Pressable><Pressable style={S.callButton} onPress={()=>Linking.openURL(`tel:+91${PHONE}`)}><Text style={S.callText}>☎  Call {DISPLAY_PHONE}</Text></Pressable></ScrollView></SafeAreaView></View>;
