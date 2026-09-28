@@ -6,7 +6,11 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "android": {
-      "package": "com.nextgenmobiles.shop"
+      "package": "com.nextgenmobiles.shop",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/app-icon.png",
+        "backgroundColor": "#FFF8F5"
+      }
     },
     "ios": {
       "bundleIdentifier": "com.nextgenmobiles.shop"
@@ -32,6 +36,7 @@
       "eas": {
         "projectId": "95a40624-2436-456e-8859-2c3ef13bc99e"
       }
-    }
+    },
+    "icon": "./assets/app-icon.png"
   }
 }
