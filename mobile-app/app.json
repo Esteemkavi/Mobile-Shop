@@ -23,6 +23,15 @@
     "androidStatusBar": {
       "barStyle": "light-content",
       "backgroundColor": "#080808"
+    },
+    "extra": {
+      "expo-status-bar": {
+        "style": "light",
+        "hidden": false
+      },
+      "eas": {
+        "projectId": "95a40624-2436-456e-8859-2c3ef13bc99e"
+      }
     }
   }
 }
