@@ -5,8 +5,16 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/app-icon.png"
+    },
     "android": {
-      "package": "com.nextgenmobiles.shop"
+      "package": "com.nextgenmobiles.shop",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/app-icon.png",
+        "backgroundColor": "#FFF8F5"
+      }
     },
     "ios": {
       "bundleIdentifier": "com.nextgenmobiles.shop"
@@ -18,7 +26,8 @@
           "hidden": false,
           "style": "light"
         }
-      ]
+      ],
+      "expo-image"
     ],
     "androidStatusBar": {
       "barStyle": "light-content",
@@ -32,6 +41,7 @@
       "eas": {
         "projectId": "95a40624-2436-456e-8859-2c3ef13bc99e"
       }
-    }
+    },
+    "icon": "./assets/app-icon.png"
   }
 }
