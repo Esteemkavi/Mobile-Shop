@@ -5,6 +5,10 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/app-icon.png"
+    },
     "android": {
       "package": "com.nextgenmobiles.shop",
       "adaptiveIcon": {
@@ -22,7 +26,8 @@
           "hidden": false,
           "style": "light"
         }
-      ]
+      ],
+      "expo-image"
     ],
     "androidStatusBar": {
       "barStyle": "light-content",
