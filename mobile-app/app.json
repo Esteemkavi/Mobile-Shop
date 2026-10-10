@@ -27,7 +27,17 @@
           "style": "light"
         }
       ],
-      "expo-image"
+      "expo-image",
+      "expo-asset",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#05051A",
+          "image": "./assets/nextgen-logo.png",
+          "imageWidth": 280,
+          "resizeMode": "contain"
+        }
+      ]
     ],
     "androidStatusBar": {
       "barStyle": "light-content",
