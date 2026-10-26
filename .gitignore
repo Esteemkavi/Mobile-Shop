@@ -1,0 +1,17 @@
+# Local runtime configuration and secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# App and server runtime data
+**/node_modules/
+**/.expo/
+**/dist/
+**/web-build/
+backend/data/
+backend/uploads/
+
+# OS/editor/build output
+.DS_Store
+**/.DS_Store
+*.log

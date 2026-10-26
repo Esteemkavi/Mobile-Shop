@@ -1,0 +1,24 @@
+{
+  "name": "nextgen-mobiles-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db:migrate": "node scripts/migrate-db.js",
+    "db:check": "node scripts/check-db.js",
+    "admin:hash": "node scripts/hash-admin-password.js",
+    "admin:setup": "node scripts/setup-admin-password.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "multer": "^2.0.2",
+    "pg": "^8.16.3"
+  }
+}

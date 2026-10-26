@@ -5,10 +5,11 @@ Native React Native / Expo conversion of the NextGen Mobiles storefront.
 ## Run locally
 
 1. Install Node.js LTS.
-2. Open this folder in VS Code.
-3. Run `npm install`.
-4. Start Expo with `npx expo start`.
-5. Scan the QR code with Expo Go, or use an Android emulator.
+2. Configure the PostgreSQL API in the sibling `backend/` folder; follow the root README and run that API first.
+3. Copy `.env.example` to `.env` and set `EXPO_PUBLIC_API_URL` to the Debian/API server address reachable from this device.
+4. Run `npm install`.
+5. Start Expo with `npx expo start`.
+6. Scan the QR code with Expo Go, or use an Android emulator.
 
 ## Build an installable Android APK
 
@@ -46,10 +47,11 @@ The production profile creates an Android App Bundle (AAB), which is the normal 
 - New Arrivals gallery
 - WhatsApp enquiry
 - Phone, WhatsApp and social actions
-- Repository catalog as the source of truth
+- PostgreSQL-backed catalog and likes via the backend API
+- Guest profile creation through the backend API
 
 ## Data and images
 
-The app reads the public catalog from the repository main branch and converts relative asset paths to GitHub raw URLs. This keeps the mobile project lightweight while retaining the existing website assets.
+The app loads categories, products, arrivals, guest profiles, and likes from the NextGen backend API. Product images are served from the backend's local upload directory.
 
-For an offline production build, copy the image assets into this Expo project and switch image sources to local assets.
+The Expo API URL is compiled into app builds. Set `EXPO_PUBLIC_API_URL` before creating a native build, and use the server's HTTPS URL only after you intentionally configure TLS/public access.

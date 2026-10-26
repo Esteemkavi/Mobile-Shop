@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>NextGen Mobiles · Admin</title>
+  <link rel="stylesheet" href="/admin/styles.css">
+  <script src="/admin/admin.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="top"><div><p class="eyebrow">NEXTGEN MOBILES</p><h1>Store admin</h1></div><button id="logout" class="quiet hidden" type="button">Log out</button></header>
+    <section id="loginPanel" class="panel login-panel">
+      <h2>Admin sign in</h2>
+      <p class="muted">Sign in to manage products, categories, and images.</p>
+      <form id="loginForm" class="stack">
+        <label>Username<input id="username" name="username" autocomplete="username" required maxlength="80"></label>
+        <label>Password<input id="password" name="password" type="password" autocomplete="current-password" required maxlength="256"></label>
+        <button class="primary" type="submit">Sign in</button>
+      </form>
+      <p id="loginMessage" class="message" aria-live="polite"></p>
+    </section>
+    <section id="adminPanel" class="hidden">
+      <p id="notice" class="message" aria-live="polite"></p>
+      <section class="panel">
+        <div class="section-heading"><div><h2>Add Products</h2><p class="muted">Choose up to 10 product images, then add the details for each one.</p></div></div>
+        <label class="wide">Product images<input id="bulkImages" type="file" accept="image/jpeg,image/png,image/webp" multiple><span class="help">JPG, PNG, or WebP · optimized to 1 MB or less before upload · original image up to 30 MB · up to 30 images</span></label>
+        <div id="bulkProductRows" class="bulk-product-rows"></div>
+        <div class="actions"><button id="saveBulkProducts" class="primary" type="button" disabled>Save products</button></div>
+        <div class="uploaded-products">
+          <div class="section-heading"><div><h3>Uploaded products</h3><p class="muted">View product images or manage existing products.</p></div></div>
+          <div id="productList" class="list"></div>
+        </div>
+      </section>
+      <section class="panel">
+        <h2>Categories</h2>
+        <p class="muted">Add, rename, reorder, or deactivate categories.</p>
+        <form id="categoryForm" class="form-grid">
+          <input id="categoryEditingSlug" type="hidden">
+          <label>Category name<input id="categoryName" required maxlength="100"></label>
+          <label>Slug<input id="categorySlug" required maxlength="63" pattern="[a-z0-9][a-z0-9-]{0,62}" placeholder="e.g. phone-cases"></label>
+          <label>Subtitle<input id="categorySubtitle" maxlength="160"></label>
+          <label>Icon<input id="categoryIcon" maxlength="8" value="◇"></label>
+          <label>Display order<input id="categoryOrder" type="number" step="1" value="10"></label>
+          <label class="check"><input id="categoryActive" type="checkbox" checked> Visible in the store</label>
+          <div class="actions wide"><button class="primary" type="submit">Save category</button><button id="cancelCategory" class="quiet hidden" type="button">Cancel edit</button></div>
+        </form>
+        <div id="categoryList" class="list"></div>
+      </section>
+      <dialog id="productEditorDialog" class="admin-dialog">
+        <div class="dialog-heading"><h2>Edit product</h2><button id="closeProductEditor" class="quiet" type="button" aria-label="Close">×</button></div>
+        <form id="productForm" class="form-grid">
+          <input id="productId" type="hidden">
+          <label>Product name<input id="productName" required maxlength="180"></label>
+          <label>Category<select id="productCategory" required></select></label>
+          <label>Price (₹)<input id="productPrice" type="number" min="0" step="0.01" placeholder="Leave blank if not listed"></label>
+          <label class="wide">Description<textarea id="productDescription" rows="3" maxlength="4000"></textarea></label>
+          <label class="wide">Replace product image<input id="productImage" type="file" accept="image/jpeg,image/png,image/webp"><span class="help">Leave empty to keep the current image. Optimized to 1 MB or less before upload · original image up to 30 MB</span></label>
+          <label class="check"><input id="productArrival" type="checkbox"> Show in New Arrivals</label>
+          <label class="check"><input id="productActive" type="checkbox" checked> Visible in the store</label>
+          <div class="actions wide"><button class="primary" type="submit">Save changes</button><button id="cancelProduct" class="quiet" type="button">Cancel</button></div>
+        </form>
+      </dialog>
+      <dialog id="imagePreviewDialog" class="image-dialog">
+        <div class="dialog-heading"><p id="imagePreviewName" class="item-title"></p><button id="closeImagePreview" class="quiet" type="button" aria-label="Close">×</button></div>
+        <img id="imagePreview" alt="Product preview">
+      </dialog>
+    </section>
+  </main>
+</body>
+</html>
