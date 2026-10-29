@@ -2,6 +2,9 @@
   "build": {
     "preview": {
       "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://nextgenmobiles.duckdns.org"
+      },
       "android": {
         "buildType": "apk"
       }
